@@ -1,17 +1,17 @@
 package lite.vls;
 
 public record VlsDismension(
-    int length,
-    int width,
-    int heigth
+    Integer length,
+    Integer width,
+    Integer height
 ) {
     public VlsDismension{
-        if (length <= 0 || width <= 0 || heigth <= 0){
+        if (length <= 0 || width <= 0 || height <= 0){
             throw new IllegalArgumentException("Dismension must positive");
         }
     }
 
     public int volume(){
-        return length * width * heigth;
+        return length * width * height;
     }
 }
