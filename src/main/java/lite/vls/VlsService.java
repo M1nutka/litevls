@@ -21,4 +21,22 @@ public class VlsService {
     public List<VlsRecord> getAllRecord(){
         return vlsMap.values().stream().toList();
     }
+
+    public VlsRecord createRecord(VlsRecord vlsToCreate){
+        if (vlsToCreate.id() != null){
+            throw new IllegalArgumentException("Id shold be enpty");
+        }
+
+        var newVlsRecord = new VlsRecord(
+            idCounter.incrementAndGet(),
+            vlsToCreate.date(),
+            vlsToCreate.type(),
+            vlsToCreate.placeOfDeparture(),
+            vlsToCreate.deliveryAddress(),
+            VlsStatus.Waiting
+        );
+
+        vlsMap.put(newVlsRecord.id(), newVlsRecord);
+        return newVlsRecord;
+    }
 }
