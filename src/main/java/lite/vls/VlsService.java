@@ -22,6 +22,13 @@ public class VlsService {
         return vlsMap.values().stream().toList();
     }
 
+    public VlsRecord getById(Long id){
+        if (!vlsMap.containsKey(id)){
+            throw new IllegalArgumentException("No in Map");
+        }
+        return vlsMap.get(id);
+    }
+
     public VlsRecord createRecord(VlsRecord vlsToCreate){
         if (vlsToCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
