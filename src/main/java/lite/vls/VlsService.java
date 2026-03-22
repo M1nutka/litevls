@@ -38,7 +38,7 @@ public class VlsService {
             idCounter.incrementAndGet(),
             vlsToCreate.date(),
             vlsToCreate.typeCargo(),
-            vlsToCreate.gab(),
+            vlsToCreate.gabarit(),
             vlsToCreate.placeOfDeparture(),
             vlsToCreate.deliveryAddress(),
             VlsStatus.Waiting

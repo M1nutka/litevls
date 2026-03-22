@@ -6,7 +6,7 @@ public record VlsRecord(
     Long id,
     LocalDate date,
     VlsTypeCargo typeCargo,
-    int[] gab,
+    VlsDismension gabarit,
     String placeOfDeparture,
     String deliveryAddress,
     VlsStatus status
