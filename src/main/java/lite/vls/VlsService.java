@@ -30,7 +30,7 @@ public class VlsService {
         var newVlsRecord = new VlsRecord(
             idCounter.incrementAndGet(),
             vlsToCreate.date(),
-            vlsToCreate.type(),
+            VlsTypeCargo.Other,
             vlsToCreate.placeOfDeparture(),
             vlsToCreate.deliveryAddress(),
             VlsStatus.Waiting
