@@ -3,7 +3,10 @@ package lite.vls;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +25,15 @@ public class VlsController {
 
     private final VlsService vlsService;
 
+    private static final Logger log = LoggerFactory.getLogger(VlsController.class);
+
     public VlsController(VlsService vlsService){
         this.vlsService = vlsService;
     }
     
     @GetMapping()
     public ResponseEntity<List<VlsRecord>> getAllRecords() {
+        log.info("Get all records");
         return ResponseEntity.ok(vlsService.getAllRecord());
     }
 
@@ -35,7 +41,15 @@ public class VlsController {
     public ResponseEntity<VlsRecord> getById(
         @PathVariable("id") Long id
     ) {
-        return ResponseEntity.ok(vlsService.getById(id));
+        try {
+            log.info("Get by id = " + id);
+            return ResponseEntity.ok()
+                .body(vlsService.getById(id));
+        } catch (NoSuchElementException e) {
+            log.error("No such by id = " + id);
+            return ResponseEntity.status(404)
+                .build();
+        }
     }
     
 
@@ -43,6 +57,7 @@ public class VlsController {
     public ResponseEntity<VlsRecord> creatRecord(
         @RequestBody VlsRecord vlsToCreate
     ) {
+        log.info("Created new record");
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(vlsService.createRecord(vlsToCreate));
     }
