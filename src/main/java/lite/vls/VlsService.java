@@ -47,4 +47,11 @@ public class VlsService {
         vlsMap.put(newVlsRecord.id(), newVlsRecord);
         return newVlsRecord;
     }
+
+    public void deleteRecord(Long id){
+        if (!vlsMap.containsKey(id)){
+            throw new IllegalArgumentException("Not found record by id = " + id);
+        }
+        vlsMap.remove(id);
+    }
 }

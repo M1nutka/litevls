@@ -70,7 +70,7 @@ public class VlsController {
         @PathVariable("id") Long id
     ) {
         try {
-            VlsService.deleteRecord(id);
+            vlsService.deleteRecord(id);
             log.info("Delete record id = " + id);
             return ResponseEntity.ok()
                 .build();
