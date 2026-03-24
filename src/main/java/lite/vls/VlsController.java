@@ -84,7 +84,7 @@ public class VlsController {
     }
     
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecord(
         @PathVariable("id") Long id
     ) {

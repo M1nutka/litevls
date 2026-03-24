@@ -118,7 +118,7 @@ public class VlsService {
         VlsRecord record
     ) {
         LocalDate toDay = LocalDate.now();
-        if (record.date().isEqual(toDay)){
+        if (record.date().isBefore(toDay)){
             return true;
         }
         
