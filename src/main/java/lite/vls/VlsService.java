@@ -13,23 +13,23 @@ public class VlsService {
 
     private final AtomicLong idCounter;
 
-    public VlsService(){
+    public VlsService() {
         vlsMap = new HashMap<>();
         idCounter = new AtomicLong();
     }
 
-    public List<VlsRecord> getAllRecord(){
+    public List<VlsRecord> getAllRecord() {
         return vlsMap.values().stream().toList();
     }
 
-    public VlsRecord getById(Long id){
+    public VlsRecord getById(Long id) {
         if (!vlsMap.containsKey(id)){
             throw new IllegalArgumentException("No in Map");
         }
         return vlsMap.get(id);
     }
 
-    public VlsRecord createRecord(VlsRecord vlsToCreate){
+    public VlsRecord createRecord(VlsRecord vlsToCreate) {
         if (vlsToCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
         }
@@ -48,10 +48,37 @@ public class VlsService {
         return newVlsRecord;
     }
 
-    public void deleteRecord(Long id){
+    public void deleteRecord(Long id) {
         if (!vlsMap.containsKey(id)){
             throw new IllegalArgumentException("Not found record by id = " + id);
         }
         vlsMap.remove(id);
+    }
+
+    public VlsRecord updateRecord(
+        Long id,
+        VlsRecord vlsToUpdate
+    ){
+        if (!vlsMap.containsKey(id)) {
+            throw new IllegalArgumentException("No item found in map for id = " + id);
+        }
+
+        var record = vlsMap.get(id);
+        if (record.status() != VlsStatus.Waiting) {
+            throw new IllegalArgumentException("Record status uncorrect, status = " + record.status());
+        }
+
+        var updateVlsRecord = new VlsRecord(
+            record.id(),
+            vlsToUpdate.date(),
+            vlsToUpdate.typeCargo(),
+            vlsToUpdate.gabarit(),
+            vlsToUpdate.placeOfDeparture(),
+            vlsToUpdate.deliveryAddress(),
+            VlsStatus.Waiting
+        );
+
+        vlsMap.put(record.id(), updateVlsRecord);
+        return record;
     }
 }

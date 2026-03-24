@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -62,6 +64,23 @@ public class VlsController {
         log.info("Created new record");
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(vlsService.createRecord(vlsToCreate));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VlsRecord> updateRecord(
+        @PathVariable("id") Long id,
+        @RequestBody VlsRecord vlsToUpdate
+    ) {
+        try {
+            vlsService.updateRecord(id, vlsToUpdate);
+            log.info("update record by id = " + id);
+            return ResponseEntity.ok()
+                .build();
+        } catch (NoSuchElementException e) {
+            log.error("No such record by id = " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .build();
+        }
     }
     
 
