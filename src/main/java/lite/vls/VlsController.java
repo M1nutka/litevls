@@ -98,8 +98,21 @@ public class VlsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .build();
         }
-
-
     }
-    
+
+    @PostMapping("approve/{id}")
+    public ResponseEntity<VlsRecord> approveRecord(
+        @PathVariable("id") Long id
+    ) {
+        try {
+            vlsService.approveRecord(id);
+            log.info("Approve record id = " + id);
+            return ResponseEntity.ok()
+                .build();
+        } catch (NoSuchElementException e) {
+            log.error("No such record by id = " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .build();
+        }
+    }
 }

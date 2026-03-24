@@ -1,10 +1,12 @@
 package lite.vls;
 
-import org.springframework.stereotype.Service;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class VlsService {
@@ -80,5 +82,50 @@ public class VlsService {
 
         vlsMap.put(record.id(), updateVlsRecord);
         return record;
+    }
+
+    public VlsRecord approveRecord(
+        Long id
+    ) {
+        if (!vlsMap.containsKey(id)) {
+            throw new IllegalArgumentException("No item found in map for id = " + id);
+        }
+
+        var record = vlsMap.get(id);
+        if (record.status() != VlsStatus.Waiting) {
+            throw new IllegalArgumentException("Record status uncorrect, status = " + record.status());
+        }
+
+        if (isConflict(record)){
+            throw new IllegalArgumentException("Cannot approve reservation because of conflict");
+        }
+
+        var approveVlsRecord = new VlsRecord(
+            record.id(),
+            record.date(),
+            record.typeCargo(),
+            record.gabarit(),
+            record.placeOfDeparture(),
+            record.deliveryAddress(),
+            VlsStatus.Working
+        );
+
+        vlsMap.put(record.id(), approveVlsRecord);
+        return record;
+    }
+
+    public boolean isConflict(
+        VlsRecord record
+    ) {
+        LocalDate toDay = LocalDate.now();
+        if (record.date().isEqual(toDay)){
+            return true;
+        }
+        
+        if (record.placeOfDeparture() == record.deliveryAddress()){
+            return true;
+        }
+
+        return false;
     }
 }
