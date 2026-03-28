@@ -25,24 +25,24 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/record")
-public class VlsController {
+public class MyController {
 
-    private final VlsService vlsService;
+    private final MyService vlsService;
 
-    private static final Logger log = LoggerFactory.getLogger(VlsController.class);
+    private static final Logger log = LoggerFactory.getLogger(MyController.class);
 
-    public VlsController(VlsService vlsService){
+    public MyController(MyService vlsService){
         this.vlsService = vlsService;
     }
     
     @GetMapping()
-    public ResponseEntity<List<VlsRecord>> getAllRecords() {
+    public ResponseEntity<List<MyRecord>> getAllRecords() {
         log.info("Get all records");
         return ResponseEntity.ok(vlsService.getAllRecord());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VlsRecord> getById(
+    public ResponseEntity<MyRecord> getById(
         @PathVariable("id") Long id
     ) {
         try {
@@ -58,8 +58,8 @@ public class VlsController {
     
 
     @PostMapping()
-    public ResponseEntity<VlsRecord> creatRecord(
-        @RequestBody VlsRecord vlsToCreate
+    public ResponseEntity<MyRecord> creatRecord(
+        @RequestBody MyRecord vlsToCreate
     ) {
         log.info("Created new record");
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -67,9 +67,9 @@ public class VlsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VlsRecord> updateRecord(
+    public ResponseEntity<MyRecord> updateRecord(
         @PathVariable("id") Long id,
-        @RequestBody VlsRecord vlsToUpdate
+        @RequestBody MyRecord vlsToUpdate
     ) {
         try {
             vlsService.updateRecord(id, vlsToUpdate);
@@ -101,7 +101,7 @@ public class VlsController {
     }
 
     @PostMapping("approve/{id}")
-    public ResponseEntity<VlsRecord> approveRecord(
+    public ResponseEntity<MyRecord> approveRecord(
         @PathVariable("id") Long id
     ) {
         try {

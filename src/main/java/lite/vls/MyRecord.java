@@ -2,13 +2,13 @@ package lite.vls;
 
 import java.time.LocalDate;
 
-public record VlsRecord(
+public record MyRecord(
     Long id,
     LocalDate date,
-    VlsTypeCargo typeCargo,
-    VlsDismension gabarit,
+    MyTypeCargo typeCargo,
+    MyDismension gabarit,
     String placeOfDeparture,
     String deliveryAddress,
-    VlsStatus status
+    MyStatus status
 ) {
 }

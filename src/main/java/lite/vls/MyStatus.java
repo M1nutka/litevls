@@ -1,6 +1,6 @@
 package lite.vls;
 
-public enum VlsStatus {
+public enum MyStatus {
     Waiting,
     Working,
     Canceled

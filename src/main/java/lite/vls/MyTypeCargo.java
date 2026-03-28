@@ -1,6 +1,6 @@
 package lite.vls;
 
-public enum VlsTypeCargo{
+public enum MyTypeCargo{
     Furniture,
     Appliances,
     Glass,

@@ -1,11 +1,11 @@
 package lite.vls;
 
-public record VlsDismension(
+public record MyDismension(
     Integer length,
     Integer width,
     Integer height
 ) {
-    public VlsDismension{
+    public MyDismension{
         if (length <= 0 || width <= 0 || height <= 0){
             throw new IllegalArgumentException("Dismension must positive");
         }
