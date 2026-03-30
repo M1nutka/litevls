@@ -6,7 +6,9 @@ public record MyRecord(
     Long id,
     LocalDate date,
     MyTypeCargo typeCargo,
-    MyDismension gabarit,
+    Integer length,
+    Integer width,
+    Integer height,
     String placeOfDeparture,
     String deliveryAddress,
     MyStatus status

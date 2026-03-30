@@ -1,133 +1,149 @@
 package lite.vls;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class MyService {
 
+    private MyRepository repository;
     
-    
-    private final Map<Long, MyRecord> vlsMap;
-
-    private final AtomicLong idCounter;
-
-    public MyService() {
-        vlsMap = new HashMap<>();
-        idCounter = new AtomicLong();
+    public MyService(MyRepository repository) {
+        this.repository = repository;
     }
 
     public List<MyRecord> getAllRecord() {
-        return vlsMap.values().stream().toList();
+        List<EntityRecord> allEntity = repository.findAll();
+
+        List<MyRecord> mylist = allEntity.stream()
+            .map(it ->
+                toDomain(it)
+            ).toList();
+        
+        return mylist;
     }
 
     public MyRecord getById(Long id) {
-        if (!vlsMap.containsKey(id)){
-            throw new IllegalArgumentException("No in Map");
-        }
-        return vlsMap.get(id);
+        EntityRecord enityById = repository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "No found by id = " + id
+            ));
+        
+        return toDomain(enityById);
     }
 
-    public MyRecord createRecord(MyRecord vlsToCreate) {
-        if (vlsToCreate.id() != null){
+    public MyRecord createRecord(MyRecord recordCreate) {
+        if (recordCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
-        var newVlsRecord = new MyRecord(
-            idCounter.incrementAndGet(),
-            vlsToCreate.date(),
-            vlsToCreate.typeCargo(),
-            vlsToCreate.gabarit(),
-            vlsToCreate.placeOfDeparture(),
-            vlsToCreate.deliveryAddress(),
+        var newEntity = new EntityRecord(
+            null,
+            recordCreate.date(),
+            recordCreate.typeCargo(),
+            recordCreate.length(),
+            recordCreate.width(),
+            recordCreate.height(),
+            recordCreate.placeOfDeparture(),
+            recordCreate.deliveryAddress(),
             MyStatus.Waiting
         );
 
-        vlsMap.put(newVlsRecord.id(), newVlsRecord);
-        return newVlsRecord;
+        var newRecord = repository.save(newEntity);
+        return toDomain(newRecord);
     }
 
-    public void deleteRecord(Long id) {
-        if (!vlsMap.containsKey(id)){
+    @Transactional
+    public void cancelRecord(Long id) {
+        if (!repository.existsById(id)){
             throw new IllegalArgumentException("Not found record by id = " + id);
         }
-        vlsMap.remove(id);
+        repository.setStatus(id, MyStatus.Canceled);
     }
 
     public MyRecord updateRecord(
         Long id,
-        MyRecord vlsToUpdate
+        MyRecord toUpdateRecord
     ){
-        if (!vlsMap.containsKey(id)) {
-            throw new IllegalArgumentException("No item found in map for id = " + id);
+        var recordById = repository.findById(id)
+            .orElseThrow (() -> new EntityNotFoundException(
+                    "Not found by id = " + id
+            ));
+        
+        if (recordById.getStatus() != MyStatus.Waiting) {
+            throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
         }
 
-        var record = vlsMap.get(id);
-        if (record.status() != MyStatus.Waiting) {
-            throw new IllegalArgumentException("Record status uncorrect, status = " + record.status());
-        }
-
-        var updateVlsRecord = new MyRecord(
-            record.id(),
-            vlsToUpdate.date(),
-            vlsToUpdate.typeCargo(),
-            vlsToUpdate.gabarit(),
-            vlsToUpdate.placeOfDeparture(),
-            vlsToUpdate.deliveryAddress(),
+        var recordToSave = new EntityRecord(
+            recordById.getId(),
+            toUpdateRecord.date(),
+            toUpdateRecord.typeCargo(),
+            toUpdateRecord.length(),
+            toUpdateRecord.width(),
+            toUpdateRecord.height(),
+            toUpdateRecord.placeOfDeparture(),
+            toUpdateRecord.deliveryAddress(),
             MyStatus.Waiting
         );
 
-        vlsMap.put(record.id(), updateVlsRecord);
-        return record;
+        var saveRecord = repository.save(recordToSave);
+        return toDomain(saveRecord);
     }
 
     public MyRecord approveRecord(
         Long id
     ) {
-        if (!vlsMap.containsKey(id)) {
-            throw new IllegalArgumentException("No item found in map for id = " + id);
+        var recordById = repository.findById(id)
+            .orElseThrow (() -> new EntityNotFoundException(
+                    "Not found by id = " + id
+            ));
+        
+        if (recordById.getStatus() != MyStatus.Waiting) {
+            throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
         }
 
-        var record = vlsMap.get(id);
-        if (record.status() != MyStatus.Waiting) {
-            throw new IllegalArgumentException("Record status uncorrect, status = " + record.status());
-        }
-
-        if (isConflict(record)){
+        if (isConflict(recordById)){
             throw new IllegalArgumentException("Cannot approve reservation because of conflict");
         }
 
-        var approveVlsRecord = new MyRecord(
-            record.id(),
-            record.date(),
-            record.typeCargo(),
-            record.gabarit(),
-            record.placeOfDeparture(),
-            record.deliveryAddress(),
-            MyStatus.Working
-        );
+        recordById.setStatus(MyStatus.Working);
 
-        vlsMap.put(record.id(), approveVlsRecord);
-        return record;
+        repository.save(recordById);
+        return toDomain(recordById);
     }
 
     public boolean isConflict(
-        MyRecord record
+        EntityRecord record
     ) {
         LocalDate toDay = LocalDate.now();
-        if (record.date().isBefore(toDay)){
+        if (record.getDate().isBefore(toDay)){
             return true;
         }
         
-        if (record.placeOfDeparture() == record.deliveryAddress()){
+        if (record.getPlaceDeparture() == record.getDeliveryAddress()){
             return true;
         }
 
         return false;
+    }
+
+    private MyRecord toDomain(
+        EntityRecord entiti
+    ) {
+        return new MyRecord(
+            entiti.getId(),
+            entiti.getDate(),
+            entiti.getTypeCargo(),
+            entiti.getLength(),
+            entiti.getWidth(),
+            entiti.getHeight(),
+            entiti.getPlaceDeparture(),
+            entiti.getDeliveryAddress(),
+            entiti.getStatus()
+        );
     }
 }

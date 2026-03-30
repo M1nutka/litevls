@@ -89,7 +89,7 @@ public class MyController {
         @PathVariable("id") Long id
     ) {
         try {
-            vlsService.deleteRecord(id);
+            vlsService.cancelRecord(id);
             log.info("Delete record id = " + id);
             return ResponseEntity.ok()
                 .build();
