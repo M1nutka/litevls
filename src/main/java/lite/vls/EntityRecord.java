@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 @Getter
 @Setter
 @AllArgsConstructor
+
 public class EntityRecord {
     @Id
     @Column(name = "id")

@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class MyService {
 
-    private MyRepository repository;
+    private final MyRepository repository;
     
     public MyService(MyRepository repository) {
         this.repository = repository;
@@ -34,6 +34,16 @@ public class MyService {
             ));
         
         return toDomain(enityById);
+    }
+
+    public List<MyRecord> getByNowDay(LocalDate date) {
+        List<EntityRecord> allEntity = repository.findByDate(date);
+        List<MyRecord> myList = allEntity.stream()
+            .map(it ->
+                toDomain(it)
+            ).toList();
+
+        return myList;
     }
 
     public MyRecord createRecord(MyRecord recordCreate) {
