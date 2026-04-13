@@ -1,16 +1,16 @@
-package lite.vls;
+package lite.transportation;
 
 import java.time.LocalDate;
 
-public record MyRecord(
+public record TransportationRecord(
     Long id,
     LocalDate date,
-    MyTypeCargo typeCargo,
+    TransportationTypeCargo typeCargo,
     Integer length,
     Integer width,
     Integer height,
     String placeOfDeparture,
     String deliveryAddress,
-    MyStatus status
+    TransportationStatus status
 ) {
 }

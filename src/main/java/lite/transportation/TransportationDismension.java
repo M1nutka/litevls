@@ -1,11 +1,11 @@
-package lite.vls;
+package lite.transportation;
 
-public record MyDismension(
+public record TransportationDismension(
     Integer length,
     Integer width,
     Integer height
 ) {
-    public MyDismension{
+    public TransportationDismension{
         if (length <= 0 || width <= 0 || height <= 0){
             throw new IllegalArgumentException("Dismension must positive");
         }

@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.transportation;
 
 import java.time.LocalDate;
 
@@ -20,7 +20,7 @@ import jakarta.persistence.GenerationType;
 @Setter
 @AllArgsConstructor
 
-public class EntityRecord {
+public class TransportationEntityRecord {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class EntityRecord {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private MyTypeCargo typeCargo;
+    private TransportationTypeCargo typeCargo;
 
     @Column(name = "length")
     private Integer length;
@@ -50,6 +50,6 @@ public class EntityRecord {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private MyStatus status;
+    private TransportationStatus status;
 
 }

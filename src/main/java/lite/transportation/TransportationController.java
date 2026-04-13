@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.transportation;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,24 +25,24 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/record")
-public class MyController {
+public class TransportationController {
 
-    private final MyService vlsService;
+    private final TransportationService vlsService;
 
-    private static final Logger log = LoggerFactory.getLogger(MyController.class);
+    private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
 
-    public MyController(MyService vlsService){
+    public TransportationController(TransportationService vlsService){
         this.vlsService = vlsService;
     }
     
     @GetMapping()
-    public ResponseEntity<List<MyRecord>> getAllRecords() {
+    public ResponseEntity<List<TransportationRecord>> getAllRecords() {
         log.info("Get all records");
         return ResponseEntity.ok(vlsService.getAllRecord());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MyRecord> getById(
+    public ResponseEntity<TransportationRecord> getById(
         @PathVariable("id") Long id
     ) {
         try {
@@ -58,8 +58,8 @@ public class MyController {
     
 
     @PostMapping()
-    public ResponseEntity<MyRecord> creatRecord(
-        @RequestBody MyRecord vlsToCreate
+    public ResponseEntity<TransportationRecord> creatRecord(
+        @RequestBody TransportationRecord vlsToCreate
     ) {
         log.info("Created new record");
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -67,9 +67,9 @@ public class MyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MyRecord> updateRecord(
+    public ResponseEntity<TransportationRecord> updateRecord(
         @PathVariable("id") Long id,
-        @RequestBody MyRecord vlsToUpdate
+        @RequestBody TransportationRecord vlsToUpdate
     ) {
         try {
             vlsService.updateRecord(id, vlsToUpdate);
@@ -101,7 +101,7 @@ public class MyController {
     }
 
     @PostMapping("approve/{id}")
-    public ResponseEntity<MyRecord> approveRecord(
+    public ResponseEntity<TransportationRecord> approveRecord(
         @PathVariable("id") Long id
     ) {
         try {

@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.transportation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,18 +8,18 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
-public class MyService {
+public class TransportationService {
 
-    private final MyRepository repository;
+    private final TransportationRepository repository;
     
-    public MyService(MyRepository repository) {
+    public TransportationService(TransportationRepository repository) {
         this.repository = repository;
     }
 
-    public List<MyRecord> getAllRecord() {
-        List<EntityRecord> allEntity = repository.findAll();
+    public List<TransportationRecord> getAllRecord() {
+        List<TransportationEntityRecord> allEntity = repository.findAll();
 
-        List<MyRecord> mylist = allEntity.stream()
+        List<TransportationRecord> mylist = allEntity.stream()
             .map(it ->
                 toDomain(it)
             ).toList();
@@ -27,8 +27,8 @@ public class MyService {
         return mylist;
     }
 
-    public MyRecord getById(Long id) {
-        EntityRecord enityById = repository.findById(id)
+    public TransportationRecord getById(Long id) {
+        TransportationEntityRecord enityById = repository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(
                 "No found by id = " + id
             ));
@@ -36,9 +36,9 @@ public class MyService {
         return toDomain(enityById);
     }
 
-    public List<MyRecord> getByNowDay(LocalDate date) {
-        List<EntityRecord> allEntity = repository.findByDate(date);
-        List<MyRecord> myList = allEntity.stream()
+    public List<TransportationRecord> getByNowDay(LocalDate date) {
+        List<TransportationEntityRecord> allEntity = repository.findByDate(date);
+        List<TransportationRecord> myList = allEntity.stream()
             .map(it ->
                 toDomain(it)
             ).toList();
@@ -46,12 +46,12 @@ public class MyService {
         return myList;
     }
 
-    public MyRecord createRecord(MyRecord recordCreate) {
+    public TransportationRecord createRecord(TransportationRecord recordCreate) {
         if (recordCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
-        var newEntity = new EntityRecord(
+        var newEntity = new TransportationEntityRecord(
             null,
             recordCreate.date(),
             recordCreate.typeCargo(),
@@ -60,7 +60,7 @@ public class MyService {
             recordCreate.height(),
             recordCreate.placeOfDeparture(),
             recordCreate.deliveryAddress(),
-            MyStatus.Waiting
+            TransportationStatus.Waiting
         );
 
         var newRecord = repository.save(newEntity);
@@ -72,23 +72,23 @@ public class MyService {
         if (!repository.existsById(id)){
             throw new IllegalArgumentException("Not found record by id = " + id);
         }
-        repository.setStatus(id, MyStatus.Canceled);
+        repository.setStatus(id, TransportationStatus.Canceled);
     }
 
-    public MyRecord updateRecord(
+    public TransportationRecord updateRecord(
         Long id,
-        MyRecord toUpdateRecord
+        TransportationRecord toUpdateRecord
     ){
         var recordById = repository.findById(id)
             .orElseThrow (() -> new EntityNotFoundException(
                     "Not found by id = " + id
             ));
         
-        if (recordById.getStatus() != MyStatus.Waiting) {
+        if (recordById.getStatus() != TransportationStatus.Waiting) {
             throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
         }
 
-        var recordToSave = new EntityRecord(
+        var recordToSave = new TransportationEntityRecord(
             recordById.getId(),
             toUpdateRecord.date(),
             toUpdateRecord.typeCargo(),
@@ -97,14 +97,14 @@ public class MyService {
             toUpdateRecord.height(),
             toUpdateRecord.placeOfDeparture(),
             toUpdateRecord.deliveryAddress(),
-            MyStatus.Waiting
+            TransportationStatus.Waiting
         );
 
         var saveRecord = repository.save(recordToSave);
         return toDomain(saveRecord);
     }
 
-    public MyRecord approveRecord(
+    public TransportationRecord approveRecord(
         Long id
     ) {
         var recordById = repository.findById(id)
@@ -112,7 +112,7 @@ public class MyService {
                     "Not found by id = " + id
             ));
         
-        if (recordById.getStatus() != MyStatus.Waiting) {
+        if (recordById.getStatus() != TransportationStatus.Waiting) {
             throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
         }
 
@@ -120,14 +120,14 @@ public class MyService {
             throw new IllegalArgumentException("Cannot approve reservation because of conflict");
         }
 
-        recordById.setStatus(MyStatus.Working);
+        recordById.setStatus(TransportationStatus.Working);
 
         repository.save(recordById);
         return toDomain(recordById);
     }
 
     public boolean isConflict(
-        EntityRecord record
+        TransportationEntityRecord record
     ) {
         LocalDate toDay = LocalDate.now();
         if (record.getDate().isBefore(toDay)){
@@ -141,10 +141,10 @@ public class MyService {
         return false;
     }
 
-    private MyRecord toDomain(
-        EntityRecord entiti
+    private TransportationRecord toDomain(
+        TransportationEntityRecord entiti
     ) {
-        return new MyRecord(
+        return new TransportationRecord(
             entiti.getId(),
             entiti.getDate(),
             entiti.getTypeCargo(),

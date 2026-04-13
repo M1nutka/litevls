@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.transportation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface MyRepository extends JpaRepository<EntityRecord, Long>{
+public interface TransportationRepository extends JpaRepository<TransportationEntityRecord, Long>{
     
 
     @Modifying
@@ -19,7 +19,7 @@ public interface MyRepository extends JpaRepository<EntityRecord, Long>{
             """)
     void setStatus (
         @Param("id") Long id,
-        @Param("status")  MyStatus myStatus
+        @Param("status")  TransportationStatus myStatus
     );
 
     @Query("""
@@ -27,7 +27,7 @@ public interface MyRepository extends JpaRepository<EntityRecord, Long>{
             from EntityRecord e
             where DATE(e.dateField) =:date
             """)
-    List<EntityRecord> findByDate (
+    List<TransportationEntityRecord> findByDate (
         @Param("date") LocalDate date
     );
 }
