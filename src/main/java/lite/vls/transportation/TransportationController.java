@@ -1,4 +1,4 @@
-package lite.transportation;
+package lite.vls.transportation;
 
 import org.springframework.web.bind.annotation.RestController;
 
