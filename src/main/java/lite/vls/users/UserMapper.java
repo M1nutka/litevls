@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-    public UserRecord toDomain(
-        UserEntityRecord entiti
+    public User toDomain(
+        UserEntity entiti
     ) {
-        return new UserRecord(
+        return new User(
             entiti.getId(),
             entiti.getName(),
             entiti.getLastname(),
@@ -17,10 +17,10 @@ public class UserMapper {
         );
     }
 
-    public UserEntityRecord toEntity(
-        UserRecord record
+    public UserEntity toEntity(
+        User record
     ) {
-        return new UserEntityRecord(
+        return new UserEntity(
             record.id(),
             record.name(),
             record.lastname(),

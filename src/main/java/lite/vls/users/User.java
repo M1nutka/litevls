@@ -1,6 +1,6 @@
 package lite.vls.users;
 
-public record UserRecord(
+public record User(
     Long id,
     String name,
     String lastname,

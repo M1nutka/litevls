@@ -19,10 +19,10 @@ public class TransportationService {
         this.mapper = mapper;
     }
 
-    public List<TransportationRecord> getAllRecord() {
-        List<TransportationEntityRecord> allEntity = repository.findAll();
+    public List<Transportation> getAllTransportations() {
+        List<TransportationEntity> allEntity = repository.findAll();
 
-        List<TransportationRecord> mylist = allEntity.stream()
+        List<Transportation> mylist = allEntity.stream()
             .map(it ->
                 mapper.toDomain(it)
             ).toList();
@@ -30,8 +30,8 @@ public class TransportationService {
         return mylist;
     }
 
-    public TransportationRecord getById(Long id) {
-        TransportationEntityRecord enityById = repository.findById(id)
+    public Transportation getTransportationById(Long id) {
+        TransportationEntity enityById = repository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(
                 "No found by id = " + id
             ));
@@ -40,78 +40,78 @@ public class TransportationService {
     }
 
 
-    public TransportationRecord createRecord(TransportationRecord recordCreate) {
-        if (recordCreate.id() != null){
+    public Transportation createTransportation(Transportation transportationCreate) {
+        if (transportationCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
-        var entityToSave = mapper.toEntity(recordCreate);
+        var entityToSave = mapper.toEntity(transportationCreate);
         entityToSave.setStatus(TransportationStatus.Waiting);
 
-        var newRecord = repository.save(entityToSave);
-        return mapper.toDomain(newRecord);
+        var newtransportation = repository.save(entityToSave);
+        return mapper.toDomain(newtransportation);
     }
 
     @Transactional
-    public void cancelRecord(Long id) {
+    public void cancelTransportation(Long id) {
         if (!repository.existsById(id)){
-            throw new IllegalArgumentException("Not found record by id = " + id);
+            throw new IllegalArgumentException("Not found transportation by id = " + id);
         }
         repository.setStatus(id, TransportationStatus.Canceled);
     }
 
-    public TransportationRecord updateRecord(
+    public Transportation updateTransportation(
         Long id,
-        TransportationRecord toUpdateRecord
+        Transportation toUpdatetransportation
     ){
-        var recordById = repository.findById(id)
+        var transportationById = repository.findById(id)
             .orElseThrow (() -> new EntityNotFoundException(
                     "Not found by id = " + id
             ));
         
-        if (recordById.getStatus() != TransportationStatus.Waiting) {
-            throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
+        if (transportationById.getStatus() != TransportationStatus.Waiting) {
+            throw new IllegalArgumentException("Uncorrect status, status = " + transportationById.getStatus());
         }
 
-        var recordToSave = mapper.toEntity(toUpdateRecord);
-        recordToSave.setId(id);
-        recordToSave.setStatus(TransportationStatus.Waiting);
+        var transportationToSave = mapper.toEntity(toUpdatetransportation);
+        transportationToSave.setId(id);
+        transportationToSave.setStatus(TransportationStatus.Waiting);
 
-        var saveRecord = repository.save(recordToSave);
-        return mapper.toDomain(saveRecord);
+        var savetransportation = repository.save(transportationToSave);
+        return mapper.toDomain(savetransportation);
     }
 
-    public TransportationRecord approveRecord(
+    public Transportation approveTransportation(
         Long id
     ) {
-        var recordById = repository.findById(id)
+        var transportationById = repository.findById(id)
             .orElseThrow (() -> new EntityNotFoundException(
                     "Not found by id = " + id
             ));
         
-        if (recordById.getStatus() != TransportationStatus.Waiting) {
-            throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
+        if (transportationById.getStatus() != TransportationStatus.Waiting) {
+            throw new IllegalArgumentException("Uncorrect status, status = " + transportationById.getStatus());
         }
 
-        if (isConflict(recordById)){
+        if (isConflict(transportationById)){
             throw new IllegalArgumentException("Cannot approve reservation because of conflict");
         }
 
-        recordById.setStatus(TransportationStatus.Working);
+        transportationById.setStatus(TransportationStatus.Working);
 
-        repository.save(recordById);
-        return mapper.toDomain(recordById);
+        repository.save(transportationById);
+        return mapper.toDomain(transportationById);
     }
 
     public boolean isConflict(
-        TransportationEntityRecord record
+        TransportationEntity transportation
     ) {
         LocalDate toDay = LocalDate.now();
-        if (record.getDate().isBefore(toDay)){
+        if (transportation.getDate().isBefore(toDay)){
             return true;
         }
         
-        if (record.getPlaceDeparture() == record.getDeliveryAddress()){
+        if (transportation.getPlaceDeparture() == transportation.getDeliveryAddress()){
             return true;
         }
 

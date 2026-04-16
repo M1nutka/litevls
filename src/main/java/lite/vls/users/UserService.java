@@ -23,13 +23,20 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
     
-    public List<UserRecord> getAllUser(){
+    public List<User> getAllUser(){
 
-        List<UserEntityRecord> allUserEntity = repository.findAll();
+        List<UserEntity> allUserEntity = repository.findAll();
 
-        List<UserRecord> allUser = allUserEntity.stream()
+        List<User> allUser = allUserEntity.stream()
             .map(it -> mapper.toDomain(it)).toList();
 
         return allUser;
+    }
+
+    public User createUser(User newUser) {
+        
+        UserEntity newEntityUser = mapper.toEntity(newUser);
+        repository.save(newEntityUser);
+        return mapper.toDomain(newEntityUser);
     }
 }

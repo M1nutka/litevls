@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransportationMapper {
     
-    public TransportationRecord toDomain(
-        TransportationEntityRecord entiti
+    public Transportation toDomain(
+        TransportationEntity entiti
     ) {
-        return new TransportationRecord(
+        return new Transportation(
             entiti.getId(),
             entiti.getUser(),
             entiti.getDate(),
@@ -22,20 +22,20 @@ public class TransportationMapper {
         );
     }
 
-    public TransportationEntityRecord toEntity(
-        TransportationRecord record
+    public TransportationEntity toEntity(
+        Transportation transportation
     ) {
-        return new TransportationEntityRecord(
-            record.id(),
-            record.user(),
-            record.date(),
-            record.typeCargo(),
-            record.length(),
-            record.width(),
-            record.height(),
-            record.placeOfDeparture(),
-            record.deliveryAddress(),
-            record.status()
+        return new TransportationEntity(
+            transportation.id(),
+            transportation.user(),
+            transportation.date(),
+            transportation.typeCargo(),
+            transportation.length(),
+            transportation.width(),
+            transportation.height(),
+            transportation.placeOfDeparture(),
+            transportation.deliveryAddress(),
+            transportation.status()
         );
     }
 

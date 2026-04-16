@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/record")
+@RequestMapping("/transportation")
 public class TransportationController {
 
     private final TransportationService service;
@@ -35,38 +35,38 @@ public class TransportationController {
     }
     
     @GetMapping()
-    public ResponseEntity<List<TransportationRecord>> getAllRecords() {
-        log.info("Get all records");
-        return ResponseEntity.ok(service.getAllRecord());
+    public ResponseEntity<List<Transportation>> getAllTransportations() {
+        log.info("Get all transportations");
+        return ResponseEntity.ok(service.getAllTransportations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransportationRecord> getById(
+    public ResponseEntity<Transportation> getById(
         @PathVariable("id") Long id
     ) {
         log.info("Get by id = " + id);
         return ResponseEntity.ok()
-            .body(service.getById(id));
+            .body(service.getTransportationById(id));
 
     }
     
 
     @PostMapping()
-    public ResponseEntity<TransportationRecord> creatRecord(
-        @RequestBody TransportationRecord vlsToCreate
+    public ResponseEntity<Transportation> creatTransportation(
+        @RequestBody Transportation vlsToCreate
     ) {
-        log.info("Created new record");
+        log.info("Created new transportation");
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(service.createRecord(vlsToCreate));
+            .body(service.createTransportation(vlsToCreate));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransportationRecord> updateRecord(
+    public ResponseEntity<Transportation> updateTransportation(
         @PathVariable("id") Long id,
-        @RequestBody TransportationRecord vlsToUpdate
+        @RequestBody Transportation vlsToUpdate
     ) {
-        service.updateRecord(id, vlsToUpdate);
-        log.info("update record by id = " + id);
+        service.updateTransportation(id, vlsToUpdate);
+        log.info("update transportation by id = " + id);
         return ResponseEntity.ok()
             .build();
 
@@ -74,22 +74,22 @@ public class TransportationController {
     
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecord(
+    public ResponseEntity<Void> deleteTransportation(
         @PathVariable("id") Long id
     ) {
-        service.cancelRecord(id);
-        log.info("Delete record id = " + id);
+        service.cancelTransportation(id);
+        log.info("Delete transportation id = " + id);
         return ResponseEntity.ok()
             .build();
 
     }
 
     @PostMapping("approve/{id}")
-    public ResponseEntity<TransportationRecord> approveRecord(
+    public ResponseEntity<Transportation> approveTransportation(
         @PathVariable("id") Long id
     ) {
-        service.approveRecord(id);
-        log.info("Approve record id = " + id);
+        service.approveTransportation(id);
+        log.info("Approve transportation id = " + id);
         return ResponseEntity.ok()
             .build();
     }

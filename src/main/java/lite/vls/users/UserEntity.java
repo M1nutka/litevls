@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class UserEntityRecord {
+public class UserEntity {
 
     @Id
     @Column(name = "id")
