@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.vls.web;
 
 import java.time.LocalDateTime;
 

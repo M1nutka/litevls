@@ -11,9 +11,12 @@ import jakarta.transaction.Transactional;
 public class TransportationService {
 
     private final TransportationRepository repository;
+
+    private final TransportationMapper mapper;
     
-    public TransportationService(TransportationRepository repository) {
+    public TransportationService(TransportationRepository repository, TransportationMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public List<TransportationRecord> getAllRecord() {
@@ -21,7 +24,7 @@ public class TransportationService {
 
         List<TransportationRecord> mylist = allEntity.stream()
             .map(it ->
-                toDomain(it)
+                mapper.toDomain(it)
             ).toList();
         
         return mylist;
@@ -33,38 +36,20 @@ public class TransportationService {
                 "No found by id = " + id
             ));
         
-        return toDomain(enityById);
+        return mapper.toDomain(enityById);
     }
 
-    public List<TransportationRecord> getByNowDay(LocalDate date) {
-        List<TransportationEntityRecord> allEntity = repository.findByDate(date);
-        List<TransportationRecord> myList = allEntity.stream()
-            .map(it ->
-                toDomain(it)
-            ).toList();
-
-        return myList;
-    }
 
     public TransportationRecord createRecord(TransportationRecord recordCreate) {
         if (recordCreate.id() != null){
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
-        var newEntity = new TransportationEntityRecord(
-            null,
-            recordCreate.date(),
-            recordCreate.typeCargo(),
-            recordCreate.length(),
-            recordCreate.width(),
-            recordCreate.height(),
-            recordCreate.placeOfDeparture(),
-            recordCreate.deliveryAddress(),
-            TransportationStatus.Waiting
-        );
+        var entityToSave = mapper.toEntity(recordCreate);
+        entityToSave.setStatus(TransportationStatus.Waiting);
 
-        var newRecord = repository.save(newEntity);
-        return toDomain(newRecord);
+        var newRecord = repository.save(entityToSave);
+        return mapper.toDomain(newRecord);
     }
 
     @Transactional
@@ -88,20 +73,12 @@ public class TransportationService {
             throw new IllegalArgumentException("Uncorrect status, status = " + recordById.getStatus());
         }
 
-        var recordToSave = new TransportationEntityRecord(
-            recordById.getId(),
-            toUpdateRecord.date(),
-            toUpdateRecord.typeCargo(),
-            toUpdateRecord.length(),
-            toUpdateRecord.width(),
-            toUpdateRecord.height(),
-            toUpdateRecord.placeOfDeparture(),
-            toUpdateRecord.deliveryAddress(),
-            TransportationStatus.Waiting
-        );
+        var recordToSave = mapper.toEntity(toUpdateRecord);
+        recordToSave.setId(id);
+        recordToSave.setStatus(TransportationStatus.Waiting);
 
         var saveRecord = repository.save(recordToSave);
-        return toDomain(saveRecord);
+        return mapper.toDomain(saveRecord);
     }
 
     public TransportationRecord approveRecord(
@@ -123,7 +100,7 @@ public class TransportationService {
         recordById.setStatus(TransportationStatus.Working);
 
         repository.save(recordById);
-        return toDomain(recordById);
+        return mapper.toDomain(recordById);
     }
 
     public boolean isConflict(
@@ -141,19 +118,4 @@ public class TransportationService {
         return false;
     }
 
-    private TransportationRecord toDomain(
-        TransportationEntityRecord entiti
-    ) {
-        return new TransportationRecord(
-            entiti.getId(),
-            entiti.getDate(),
-            entiti.getTypeCargo(),
-            entiti.getLength(),
-            entiti.getWidth(),
-            entiti.getHeight(),
-            entiti.getPlaceDeparture(),
-            entiti.getDeliveryAddress(),
-            entiti.getStatus()
-        );
-    }
 }
