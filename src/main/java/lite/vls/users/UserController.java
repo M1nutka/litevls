@@ -45,7 +45,7 @@ public class UserController {
 
         return ResponseEntity
             .status(201)
-            .body(service.createUser(record));
+            .body(service.registerUser(record));
     }
     
 }

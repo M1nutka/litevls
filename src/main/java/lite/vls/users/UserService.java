@@ -1,5 +1,6 @@
 package lite.vls.users;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lite.vls.transportation.TransportationController;
@@ -16,9 +17,12 @@ public class UserService {
 
     private final UserMapper mapper;
 
-        public UserService(UserRepository repository, UserMapper mapper){
+    private final PasswordEncoder passwordEncoder;
+
+        public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder){
         this.repository = repository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
@@ -33,10 +37,23 @@ public class UserService {
         return allUser;
     }
 
-    public User createUser(User newUser) {
+    public User registerUser(User newUser) {
         
+        String hashPassword = passwordEncoder.encode(newUser.password());
         UserEntity newEntityUser = mapper.toEntity(newUser);
+        newEntityUser.setPassword(hashPassword);
+
         repository.save(newEntityUser);
-        return mapper.toDomain(newEntityUser);
+        User userToSave = mapper.toDomain(newEntityUser);
+        return new User(
+            userToSave.id(),
+            userToSave.name(),
+            userToSave.lastname(),
+            userToSave.phone(),
+            userToSave.email(),
+            null
+        );
     }
+
+
 }
