@@ -39,7 +39,7 @@ public class UserController {
             .body(service.getAllUser());
     }
 
-    @PostMapping()
+    @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody @Valid User record) {
         log.info("Create new user");
 
@@ -47,5 +47,15 @@ public class UserController {
             .status(201)
             .body(service.registerUser(record));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestBody @Valid Response response) {
+        log.info("Login user");
+
+        return ResponseEntity
+            .status(201)
+            .body(service.loginUser(response));
+    }
+    
     
 }

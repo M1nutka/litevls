@@ -55,5 +55,9 @@ public class UserService {
         );
     }
 
+    public User loginUser(Response response){
+        
+    }
+
 
 }
