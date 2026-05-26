@@ -76,7 +76,9 @@ public class UserService implements UserDetailsService {
         System.out.println("Stored password hash: " + foundUser.getPassword());
         
         return mapper.toDomain(foundUser);
-}
+    }
+
+
 
 
 }

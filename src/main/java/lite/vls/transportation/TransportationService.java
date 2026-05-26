@@ -2,21 +2,29 @@ package lite.vls.transportation;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lite.vls.users.UserEntity;
+import lite.vls.users.UserRepository;
 
 @Service
 public class TransportationService {
 
     private final TransportationRepository repository;
 
+    private final UserRepository userRepository;
+
     private final TransportationMapper mapper;
     
-    public TransportationService(TransportationRepository repository, TransportationMapper mapper) {
+    public TransportationService(TransportationRepository repository, TransportationMapper mapper, UserRepository userRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.userRepository = userRepository;
     }
 
     public List<Transportation> getAllTransportations() {
@@ -45,7 +53,10 @@ public class TransportationService {
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
+        UserEntity user = getCurrentUser();
+
         var entityToSave = mapper.toEntity(transportationCreate);
+        entityToSave.setUser(user);
         entityToSave.setStatus(TransportationStatus.Waiting);
 
         var newtransportation = repository.save(entityToSave);
@@ -116,6 +127,13 @@ public class TransportationService {
         }
 
         return false;
+    }
+
+    private UserEntity getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email);
+
     }
 
 }

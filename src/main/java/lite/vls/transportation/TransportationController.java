@@ -53,19 +53,19 @@ public class TransportationController {
 
     @PostMapping()
     public ResponseEntity<Transportation> creatTransportation(
-        @RequestBody Transportation vlsToCreate
+        @RequestBody Transportation transportationToCreate
     ) {
         log.info("Created new transportation");
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(service.createTransportation(vlsToCreate));
+            .body(service.createTransportation(transportationToCreate));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Transportation> updateTransportation(
         @PathVariable("id") Long id,
-        @RequestBody Transportation vlsToUpdate
+        @RequestBody Transportation transportationToUpdate
     ) {
-        service.updateTransportation(id, vlsToUpdate);
+        service.updateTransportation(id, transportationToUpdate);
         log.info("update transportation by id = " + id);
         return ResponseEntity.ok()
             .build();
