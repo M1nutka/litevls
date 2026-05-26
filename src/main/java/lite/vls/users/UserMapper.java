@@ -13,7 +13,9 @@ public class UserMapper {
             entiti.getLastname(),
             entiti.getPhone(),
             entiti.getEmail(),
-            entiti.getPassword()
+            entiti.getPassword(),
+            entiti.getRole(),
+            entiti.getActive()
         );
     }
 
@@ -26,7 +28,9 @@ public class UserMapper {
             record.lastname(),
             record.phone(),
             record.email(),
-            record.password()
+            record.password(),
+            record.role(),
+            record.active()
         );
     }
 

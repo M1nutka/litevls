@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody @Valid Response response) {
+    public ResponseEntity<String> loginUser(@RequestBody @Valid Response response) {
         log.info("Login user");
 
         return ResponseEntity

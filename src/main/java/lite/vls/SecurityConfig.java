@@ -19,8 +19,7 @@ import lite.vls.users.UserService;
 @EnableWebSecurity
 public class SecurityConfig {
     
-    @Autowired
-    private UserService userService;
+
 
 
     @Bean
@@ -38,12 +37,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    AuthenticationManager authenticationManager(
+        HttpSecurity http,
+        UserService userService,
+        PasswordEncoder passwordEncoder
+    ) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
             http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder
             .userDetailsService(userService)
-            .passwordEncoder(passwordEncoder());
+            .passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
 

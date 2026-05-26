@@ -1,5 +1,9 @@
 package lite.vls.users;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,10 +26,13 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-        public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder){
+    private final AuthenticationManager authenticationManager;
+
+        public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager){
         this.repository = repository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
@@ -45,7 +52,6 @@ public class UserService implements UserDetailsService {
         String hashPassword = passwordEncoder.encode(newUser.password());
         UserEntity newEntityUser = mapper.toEntity(newUser);
         newEntityUser.setPassword(hashPassword);
-
         repository.save(newEntityUser);
         User userToSave = mapper.toDomain(newEntityUser);
         return new User(
@@ -54,18 +60,33 @@ public class UserService implements UserDetailsService {
             userToSave.lastname(),
             userToSave.phone(),
             userToSave.email(),
-            null
+            null,
+            "USER",
+            true
         );
     }
 
-    public User loginUser(Response response){
-        return new User();
+    public String loginUser(Response response){
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(response.email(), response.password())
+            );
+
+            return "Welcome, " + auth.getName() + "!";
+            
+        } catch (BadCredentialsException e) {
+            return "Wrong password!";
+            
+        } catch (UsernameNotFoundException e) {
+            return "User not found!";
+        }
+    
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
+        UserEntity foundUser = repository.findByEmail(email);
+        return mapper.toDomain(foundUser);
     }
 
 
