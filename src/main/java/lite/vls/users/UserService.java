@@ -1,9 +1,5 @@
 package lite.vls.users;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,13 +22,11 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManager authenticationManager;
 
-        public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager){
+        public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder){
         this.repository = repository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
@@ -66,28 +60,23 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public String loginUser(Response response){
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(response.email(), response.password())
-            );
-
-            return "Welcome, " + auth.getName() + "!";
-            
-        } catch (BadCredentialsException e) {
-            return "Wrong password!";
-            
-        } catch (UsernameNotFoundException e) {
-            return "User not found!";
-        }
-    
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("Searching for user: " + email);
+        
         UserEntity foundUser = repository.findByEmail(email);
+        
+        if (foundUser == null) {
+            System.out.println("User NOT found!");
+            throw new UsernameNotFoundException("User not found: " + email);
+        }
+        
+        System.out.println("User found: " + foundUser.getEmail());
+        System.out.println("Stored password hash: " + foundUser.getPassword());
+        
         return mapper.toDomain(foundUser);
-    }
+}
 
 
 }

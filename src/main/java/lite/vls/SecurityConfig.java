@@ -1,7 +1,5 @@
 package lite.vls;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +25,7 @@ public class SecurityConfig {
         http
             .csrf((csrf) -> csrf.disable())
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/").permitAll()
+                .requestMatchers("/users/login", "/users/register").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());

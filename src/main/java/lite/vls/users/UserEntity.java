@@ -46,4 +46,9 @@ public class UserEntity {
     @Column(name = "active")
     private Boolean active;
 
+    public UserEntity orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
 }
