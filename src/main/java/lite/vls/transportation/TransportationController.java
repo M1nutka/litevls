@@ -2,11 +2,14 @@ package lite.vls.transportation;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import lite.vls.users.User;
+
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 
 
@@ -35,13 +40,14 @@ public class TransportationController {
         this.service = service;
     }
     
-    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<Transportation>> getAllTransportations() {
         log.info("Get all transportations");
         return ResponseEntity.ok(service.getAllTransportations());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<Transportation> getById(
         @PathVariable("id") Long id
     ) {
@@ -50,18 +56,18 @@ public class TransportationController {
             .body(service.getTransportationById(id));
     }
 
-    @GetMapping("my")
+    @GetMapping("/user")
     public ResponseEntity<List<Transportation>> getByUser(
         Authentication authentication
-    ) { 
+    ) {
         log.info("Get by user id = " + authentication.getName());
         return ResponseEntity.ok()
             .body(service.getTransportationByUser(authentication.getName()));
     }
     
 
-    @PostMapping()
-    public ResponseEntity<Transportation> creatTransportation(
+    @PostMapping("/user")
+    public ResponseEntity<Transportation> createTransportation(
         @RequestBody Transportation transportationToCreate
     ) {
         log.info("Created new transportation");
@@ -69,7 +75,7 @@ public class TransportationController {
             .body(service.createTransportation(transportationToCreate));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/user/{id}")
     public ResponseEntity<Transportation> updateTransportation(
         @PathVariable("id") Long id,
         @RequestBody Transportation transportationToUpdate
@@ -82,18 +88,29 @@ public class TransportationController {
     }
     
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransportation(
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteTransportationUser(
         @PathVariable("id") Long id
     ) {
-        service.cancelTransportation(id);
+        service.cancelTransportationUser(id);
         log.info("Delete transportation id = " + id);
         return ResponseEntity.ok()
             .build();
-
     }
 
-    @PostMapping("approve/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Void> deleteTransportationAdmin(
+        @PathVariable("id") Long id
+    ) {
+        service.cancelTransportationAdmin(id);
+        log.info("Delete transportation id = " + id);
+        return ResponseEntity.ok()
+            .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/approve/{id}")
     public ResponseEntity<Transportation> approveTransportation(
         @PathVariable("id") Long id
     ) {
@@ -102,4 +119,12 @@ public class TransportationController {
         return ResponseEntity.ok()
             .build();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users")
+    public ResponseEntity<List<User>> getAllUser() {
+        log.info("Get all users");
+        return ResponseEntity.ok(service.getAllUsers());
+    }
+    
 }

@@ -11,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -36,15 +34,6 @@ public class UserController {
     public UserController(UserService service, AuthService authService){
         this.service = service;
         this.authService = authService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-
-        log.info("Get all users");
-        return ResponseEntity
-            .status(200)
-            .body(service.getAllUser());
     }
 
     @PostMapping("/register")
