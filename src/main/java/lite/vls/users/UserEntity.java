@@ -41,14 +41,9 @@ public class UserEntity {
     private String password;
 
     @Column(name = "role")
-    private String role;
+    private UserRole role;
 
     @Column(name = "active")
     private Boolean active;
-
-    public UserEntity orElseThrow(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
-    }
 
 }

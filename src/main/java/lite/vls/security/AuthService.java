@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.vls.security;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

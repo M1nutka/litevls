@@ -1,4 +1,4 @@
-package lite.vls;
+package lite.vls.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +26,7 @@ public class SecurityConfig {
             .csrf((csrf) -> csrf.disable())
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/users/login", "/users/register").permitAll()
+                .requestMatchers("/transportation/users/{id}", "/users/register").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());

@@ -13,7 +13,7 @@ public record User(
     String phone,
     String email,
     String password,
-    String role,
+    UserRole role,
     Boolean active
 ) implements UserDetails {
 

@@ -47,6 +47,18 @@ public class TransportationService {
         return mapper.toDomain(enityById);
     }
 
+    public List<Transportation> getTransportationByUser(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        List<TransportationEntity> allEnityByUserId = repository.findByUserId(user.getId());
+        
+        List<Transportation> mylist = allEnityByUserId.stream()
+            .map(it ->
+                mapper.toDomain(it)
+            ).toList();
+
+        return mylist;
+    }
+
 
     public Transportation createTransportation(Transportation transportationCreate) {
         if (transportationCreate.id() != null){

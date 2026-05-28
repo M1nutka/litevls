@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import lite.vls.AuthService;
+import lite.vls.security.AuthService;
 import lite.vls.transportation.TransportationController;
 
 import org.springframework.http.ResponseEntity;

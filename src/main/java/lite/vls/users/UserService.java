@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
             userToSave.phone(),
             userToSave.email(),
             null,
-            "USER",
+            UserRole.USER,
             true
         );
     }
