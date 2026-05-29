@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lite.vls.users.User;
 import lite.vls.users.UserEntity;
-import lite.vls.users.UserMapper;
+
 import lite.vls.users.UserRepository;
 
 @Service
@@ -23,13 +22,10 @@ public class TransportationService {
 
     private final TransportationMapper mapper;
 
-    private final UserMapper userMapper;
-    
-    public TransportationService(TransportationRepository repository, TransportationMapper mapper, UserRepository userRepository, UserMapper userMapper) {
+    public TransportationService(TransportationRepository repository, TransportationMapper mapper, UserRepository userRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
     public List<Transportation> getAllTransportations() {
@@ -137,17 +133,6 @@ public class TransportationService {
 
         repository.save(transportationById);
         return mapper.toDomain(transportationById);
-    }
-
-    public List<User> getAllUsers(){
-        List<UserEntity> allUsersEntity = userRepository.findAll();
-
-        List<User> userList = allUsersEntity.stream()
-        .map(
-            it -> userMapper.toDomain(null)
-        ).toList();
-        
-        return userList;
     }
 
     public boolean isConflict(

@@ -5,17 +5,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
     public User toDomain(
-        UserEntity entiti
+        UserEntity user
     ) {
         return new User(
-            entiti.getId(),
-            entiti.getName(),
-            entiti.getLastname(),
-            entiti.getPhone(),
-            entiti.getEmail(),
-            entiti.getPassword(),
-            entiti.getRole(),
-            entiti.getActive()
+            user.getId(),
+            user.getName(),
+            user.getLastname(),
+            user.getPhone(),
+            user.getEmail(),
+            user.getPassword(),
+            user.getRole(),
+            user.getActive()
         );
     }
 

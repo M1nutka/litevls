@@ -1,9 +1,6 @@
 package lite.vls.transportation;
 
 import org.springframework.web.bind.annotation.RestController;
-
-import lite.vls.users.User;
-
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,11 +117,6 @@ public class TransportationController {
             .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/users")
-    public ResponseEntity<List<User>> getAllUser() {
-        log.info("Get all users");
-        return ResponseEntity.ok(service.getAllUsers());
-    }
+
     
 }

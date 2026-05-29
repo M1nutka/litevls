@@ -1,10 +1,14 @@
 package lite.vls.users;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -20,6 +24,27 @@ public class UserService implements UserDetailsService {
         this.repository = repository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
+    }
+
+
+    public List<User> getAllUsers(){
+        List<UserEntity> allUsersEntity = repository.findAll();
+
+        List<User> userList = allUsersEntity.stream()
+        .map(
+            it -> mapper.toDomain(it)
+        ).toList();
+        
+        return userList;
+    }
+
+    public User getUser(Long id){
+        UserEntity user = repository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(
+                "No found by id = " + id
+            ));
+
+        return mapper.toDomain(user);
     }
     
     public User registerUser(User newUser) {

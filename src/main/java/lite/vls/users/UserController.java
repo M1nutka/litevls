@@ -8,15 +8,19 @@ import lite.vls.security.AuthService;
 import lite.vls.transportation.TransportationController;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -34,6 +38,22 @@ public class UserController {
     public UserController(UserService service, AuthService authService){
         this.service = service;
         this.authService = authService;
+    }
+
+        @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users")
+    public ResponseEntity<List<User>> getAllUser() {
+        log.info("Get all users");
+        return ResponseEntity.ok(service.getAllUsers());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users/{id}")
+    public ResponseEntity<User> getUser(
+        @PathVariable("id") Long id
+    ) {
+        log.info("Get user id = " + id);
+        return ResponseEntity.ok(service.getUser(id));
     }
 
     @PostMapping("/register")
