@@ -23,7 +23,7 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 
 @SpringBootTest
-class VlsApplicationTests {
+class UserServiceTest {
 	@Mock
 	private UserRepository userRepository;
 
