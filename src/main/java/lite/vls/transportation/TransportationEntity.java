@@ -1,10 +1,13 @@
 package lite.vls.transportation;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -24,6 +27,7 @@ import jakarta.persistence.GenerationType;
 @Getter
 @Setter
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 
 public class TransportationEntity {
     @Id
@@ -35,8 +39,12 @@ public class TransportationEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @CreatedDate
+    @Column(name = "todate", updatable = false, nullable = false)
+    private LocalDateTime todate;
+
     @Column(name = "date")
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")

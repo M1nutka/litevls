@@ -1,6 +1,6 @@
 package lite.vls.transportation;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -138,7 +138,7 @@ public class TransportationService {
     public boolean isConflict(
         TransportationEntity transportation
     ) {
-        LocalDate toDay = LocalDate.now();
+        LocalDateTime toDay = LocalDateTime.now();
         if (transportation.getDate().isBefore(toDay)){
             return true;
         }

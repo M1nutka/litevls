@@ -11,6 +11,7 @@ public class TransportationMapper {
         return new Transportation(
             entiti.getId(),
             entiti.getUser(),
+            entiti.getTodate(),
             entiti.getDate(),
             entiti.getTypeCargo(),
             entiti.getLength(),
@@ -28,6 +29,7 @@ public class TransportationMapper {
         return new TransportationEntity(
             transportation.id(),
             transportation.user(),
+            transportation.today(),
             transportation.date(),
             transportation.typeCargo(),
             transportation.length(),

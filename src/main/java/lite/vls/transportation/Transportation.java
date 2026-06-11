@@ -1,6 +1,6 @@
 package lite.vls.transportation;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +13,11 @@ public record Transportation(
     Long id,
     @Null
     UserEntity user,
+    @Null
+    LocalDateTime today,
     @NotNull
     @FutureOrPresent
-    LocalDate date,
+    LocalDateTime date,
     @NotNull
     TransportationTypeCargo typeCargo,
     @NotNull
