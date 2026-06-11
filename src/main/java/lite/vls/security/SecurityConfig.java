@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import lite.vls.users.UserService;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -25,8 +23,8 @@ public class SecurityConfig {
         http
             .csrf((csrf) -> csrf.disable())
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/users/login", "/users/register").permitAll()
-                .requestMatchers("/transportation/user**").hasRole("USER")
+                .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/transportation/user**", "/users/**").hasRole("USER")
                 .requestMatchers("/transportation/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -39,13 +37,13 @@ public class SecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(
         HttpSecurity http,
-        UserService userService,
+        SecurityService SecurityService,
         PasswordEncoder passwordEncoder
     ) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
             http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder
-            .userDetailsService(userService)
+            .userDetailsService(SecurityService)
             .passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
