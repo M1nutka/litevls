@@ -16,20 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
-
-
-
-
-
 @RestController
 @RequestMapping("/transportation")
 public class TransportationController {
 
     private final TransportationService service;
-
 
     private static final Logger log = LoggerFactory.getLogger(TransportationController.class);
 
@@ -38,13 +29,14 @@ public class TransportationController {
     }
     
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Transportation>> getAllTransportations() {
         log.info("Get all transportations");
         return ResponseEntity.ok(service.getAllTransportations());
     }
 
-    @GetMapping("/user/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
     public ResponseEntity<Transportation> getById(
         @PathVariable("id") Long id
     ) {
@@ -53,6 +45,7 @@ public class TransportationController {
             .body(service.getTransportationById(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user")
     public ResponseEntity<List<Transportation>> getByUser(
         Authentication authentication
@@ -62,8 +55,8 @@ public class TransportationController {
             .body(service.getTransportationByUser(authentication.getName()));
     }
     
-
-    @PostMapping("/user")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping
     public ResponseEntity<Transportation> createTransportation(
         @RequestBody Transportation transportationToCreate
     ) {
@@ -72,42 +65,32 @@ public class TransportationController {
             .body(service.createTransportation(transportationToCreate));
     }
 
-    @PutMapping("/user/{id}")
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
     public ResponseEntity<Transportation> updateTransportation(
         @PathVariable("id") Long id,
         @RequestBody Transportation transportationToUpdate
     ) {
-        service.updateTransportation(id, transportationToUpdate);
         log.info("update transportation by id = " + id);
-        return ResponseEntity.ok()
-            .build();
-
+        return ResponseEntity.status(HttpStatus.OK).body(service.updateTransportation(id, transportationToUpdate));
     }
     
-
-    @DeleteMapping("/user/{id}")
-    public ResponseEntity<Void> deleteTransportationUser(
-        @PathVariable("id") Long id
-    ) {
-        service.cancelTransportationUser(id);
-        log.info("Delete transportation id = " + id);
-        return ResponseEntity.ok()
-            .build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/admin/{id}")
+    
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransportationAdmin(
-        @PathVariable("id") Long id
+        @PathVariable("id") Long id,
+        Authentication authentication
     ) {
-        service.cancelTransportationAdmin(id);
-        log.info("Delete transportation id = " + id);
-        return ResponseEntity.ok()
+        service.cancelTransportation(id);
+        log.info("Transportation {} cancelled by {}", id, authentication.getName());
+        return ResponseEntity.noContent()
             .build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admin/approve/{id}")
+    @PostMapping("/approve/{id}")
     public ResponseEntity<Transportation> approveTransportation(
         @PathVariable("id") Long id
     ) {

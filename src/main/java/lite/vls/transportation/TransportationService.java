@@ -66,7 +66,9 @@ public class TransportationService {
             throw new IllegalArgumentException("Id shold be enpty");
         }
 
-        UserEntity user = getCurrentUser();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserEntity user = userRepository.findByEmail(email);
 
         var entityToSave = mapper.toEntity(transportationCreate);
         entityToSave.setUser(user);
@@ -76,20 +78,13 @@ public class TransportationService {
         return mapper.toDomain(newtransportation);
     }
 
-    @Transactional
-    public void cancelTransportationUser(Long id) {
-        if (!repository.existsById(id)){
-            throw new IllegalArgumentException("Not found transportation by id = " + id);
-        }
-        repository.setStatus(id, TransportationStatus.CanceledByUser);
-    }
 
     @Transactional
-    public void cancelTransportationAdmin(Long id) {
+    public void cancelTransportation(Long id) {
         if (!repository.existsById(id)){
             throw new IllegalArgumentException("Not found transportation by id = " + id);
         }
-        repository.setStatus(id, TransportationStatus.CanceledByAdmin);
+        repository.setStatus(id, TransportationStatus.Canceled);
     }
 
     public Transportation updateTransportation(
@@ -150,11 +145,5 @@ public class TransportationService {
         return false;
     }
 
-    private UserEntity getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return userRepository.findByEmail(email);
-
-    }
 
 }
