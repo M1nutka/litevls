@@ -29,15 +29,15 @@ public class UserController {
         this.service = service;
     }
 
-        @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUser() {
         log.info("Get all users");
         return ResponseEntity.ok(service.getAllUsers());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUser(
         @PathVariable("id") Long id
     ) {
